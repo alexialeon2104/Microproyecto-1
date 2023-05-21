@@ -13,6 +13,7 @@ let interval;
 let firstCard = false;
 let secondCard = false;
 
+
 // Array con las imagenes
 const cardValues = [ { name: "biblioteca", image: "bibliotecaCard.jpg" },
 { name: "cuadro2", image: "Cuadro2Card.jpg" },
@@ -27,8 +28,9 @@ const cardValues = [ { name: "biblioteca", image: "bibliotecaCard.jpg" },
 
 //Formulario de nombre de usuario;
 const save = () => {
-    const username = document.getElementById("username");
+    const username = (document.getElementById("username")).stringifyS;
     userForm.classList.add("hide");
+    localStorage.setItem('user' , username);
 
 }
 
@@ -132,8 +134,18 @@ const matrixGenerator = (cardValues, size = 4) => {
               `;
               stopGame();
                 
-                localStorage.setItem('${username}');
-                tablePosition(user)
+                localStorage.setItem('score', pointsTotal);
+                let username = localStorage.getItem('user');
+                let points = localStorage.getItem('score');
+                let user = {name : username,
+                score : points }
+                let users = localStorage.getItem('users') ?
+                JSON.parse(localStorage.getItem('users')) : [];
+                users.push(user);
+                localStorage.setItem('users', JSON.stringify(users));
+                tablePosition(JSON.parse(localStorage.getItem('users')))
+
+
 
             }
           } else {
@@ -189,12 +201,15 @@ stopGame = () => {
   }
 
 //Generar puesto en tabla:
-tablePosition = (user, points) => {
+tablePosition = (dicarray) => {
+    for (let i = 0; i < dicarray.length; i++) {
+    
     resultsTable.innerHTML = `<tr class="data">
-    <td>${user}</td>
-    <td>${points}</td>
+    <td>${dicarray[i]['name']}</td>
+    <td>${dicarray[i]['score']}</td>
   </tr>`
-};
+  };
+}
 
 tableButton.addEventListener("click", () => {
     resultsTable.classList.remove("hide");
